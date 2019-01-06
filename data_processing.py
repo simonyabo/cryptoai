@@ -14,22 +14,21 @@ def read_in_data(filename=None):
 
 def extract_data(json_obj, filename):
     """
-    Open, close, volume_traded
+    Open, close, volume_traded, trades_count, price_high, price_low
     :param filename:
     :param json_obj:
     :return:
     """
     filename = filename.split(".")[0]
-    overall_coin_data = []
-    for i in json_obj:
-        close_price = i["price_close"]
-        open_price = i["price_open"]
-        vol_trade = i["volume_traded"]
-        count = i["trades_count"]
-        high = i["price_high"]
-        low = i["price_low"]
-        overall_coin_data.append([open_price, close_price, vol_trade, count, high, low])
-
+    extract_metrics = lambda line: [
+        line['price_open'],
+        line['price_close'],
+        line['volume_traded'],
+        line['trades_count'],
+        line['price_high'],
+        line['price_low']
+    ]
+    overall_coin_data = list(map(extract_metrics, json_obj))
     np.save("./np_coin_data/"+filename, np.array(overall_coin_data))
 
 
